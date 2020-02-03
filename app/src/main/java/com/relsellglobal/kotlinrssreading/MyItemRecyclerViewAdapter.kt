@@ -8,15 +8,21 @@ package com.relsellglobal.kotlinrssreading
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebView
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.relsellglobal.kotlinrssreading.RSSFragment.OnListFragmentInteractionListener
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
+import org.jsoup.select.Elements
+import java.io.IOException
 
 
 class MyItemRecyclerViewAdapter(
     private val mValues: List<RssItem>,
-    private val mListener: OnListFragmentInteractionListener?
+    private val mListener: OnListFragmentInteractionListener?,
+    private val context : FragmentActivity?
 ) : RecyclerView.Adapter<MyItemRecyclerViewAdapter.ViewHolder>() {
 
     private val mOnClickListener: View.OnClickListener
@@ -40,7 +46,15 @@ class MyItemRecyclerViewAdapter(
         val item = mValues[position]
         holder.titleTV?.text = item.title
         holder.pubDateTV?.text = item.pubDate
-        holder.contentTV?.loadData(item.description,"text/html","UTF-8")
+        var link = getFeaturedImageLink(item.description)
+        if(link != null) {
+            context?.let {
+                GlideApp.with(it)
+                    .load(link)
+                    .into(holder.featuredImg)
+            }
+        }
+        holder.contentTV?.text  =item.description
 
         with(holder.mView) {
             tag = item
@@ -51,10 +65,34 @@ class MyItemRecyclerViewAdapter(
     override fun getItemCount(): Int = mValues.size
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
-        val titleTV : TextView? = mView.findViewById(R.id.txtTitle)
-        val pubDateTV : TextView? = mView.findViewById(R.id.txtPubdate)
-        val contentTV : WebView? = mView.findViewById(R.id.webContent)
+        val titleTV: TextView? = mView.findViewById(R.id.txtTitle)
+        val pubDateTV: TextView? = mView.findViewById(R.id.txtPubdate)
+        val contentTV: TextView? = mView.findViewById(R.id.txtContent)
+        val featuredImg: ImageView = mView.findViewById(R.id.featuredImg);
 
 
     }
+
+
+    private fun getFeaturedImageLink(htmlText: String): String? {
+        var result: String? = null
+
+        val stringBuilder = StringBuilder()
+        try {
+            val doc: Document = Jsoup.parse(htmlText)
+            val imgs: Elements = doc.select("img")
+            for (img in imgs) {
+                var src = img.attr("src")
+                result = src
+
+            }
+
+        } catch (e: IOException) {
+
+        }
+        return result
+
+    }
+
+
 }

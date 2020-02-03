@@ -50,7 +50,7 @@ class RSSFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        adapter = MyItemRecyclerViewAdapter(rssItems, listener)
+        adapter = MyItemRecyclerViewAdapter(rssItems, listener,activity)
         listV?.layoutManager = LinearLayoutManager(activity,LinearLayoutManager.VERTICAL,false)
         listV?.adapter = adapter
 
