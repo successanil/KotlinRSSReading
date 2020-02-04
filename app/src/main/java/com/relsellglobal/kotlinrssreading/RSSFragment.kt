@@ -15,8 +15,8 @@ import androidx.recyclerview.widget.RecyclerView
 import java.io.IOException
 import java.io.InputStream
 import java.lang.ref.WeakReference
-import java.net.HttpURLConnection
 import java.net.URL
+import javax.net.ssl.HttpsURLConnection
 
 
 /**
@@ -31,7 +31,7 @@ class RSSFragment : Fragment() {
 
     private var listener: OnListFragmentInteractionListener? = null
 
-    val RSS_FEED_LINK = "http://www.relsellglobal.in/feed/";
+    val RSS_FEED_LINK = "https://www.relsellglobal.in/feed/";
 
     var adapter: MyItemRecyclerViewAdapter? = null
     var rssItems = ArrayList<RssItem>()
@@ -71,7 +71,7 @@ class RSSFragment : Fragment() {
         val reference = WeakReference(context)
         private var stream: InputStream? = null;
         override fun doInBackground(vararg params: URL?): List<RssItem>? {
-            val connect = params[0]?.openConnection() as HttpURLConnection
+            val connect = params[0]?.openConnection() as HttpsURLConnection
             connect.readTimeout = 8000
             connect.connectTimeout = 8000
             connect.requestMethod = "GET"
